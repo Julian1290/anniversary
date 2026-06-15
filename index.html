@@ -27,6 +27,7 @@ body{
     display:none;
     max-width:500px;
     font-family:Arial;
+    box-shadow:0 0 10px rgba(0,0,0,0.3);
 }
 </style>
 
@@ -42,9 +43,13 @@ const config = {
     width: 800,
     height: 600,
     backgroundColor: '#5dbb63',
+
+    pixelArt: true,
+
     physics: {
         default: 'arcade'
     },
+
     scene: {
         preload,
         create,
@@ -60,14 +65,19 @@ let star;
 
 function preload() {
 
-    // Personaje simple azul
-    let graphics = this.make.graphics({x:0,y:0,add:false});
-    graphics.fillStyle(0x0000ff);
-    graphics.fillRect(0,0,32,32);
-    graphics.generateTexture('player',32,32);
+    // Your pixel-art character
+    this.load.image(
+        'player',
+        'assets/girlfriend.png'
+    );
 
-    // Estrella amarilla
-    graphics.clear();
+    // Create a simple yellow star
+    let graphics = this.make.graphics({
+        x:0,
+        y:0,
+        add:false
+    });
+
     graphics.fillStyle(0xffff00);
     graphics.fillCircle(16,16,16);
     graphics.generateTexture('star',32,32);
@@ -76,9 +86,9 @@ function preload() {
 function create() {
 
     this.add.text(
-        250,
+        240,
         20,
-        'The Story of Us - Demo',
+        'The Story of Us ❤️',
         {
             fontSize:'28px',
             color:'#ffffff'
@@ -90,6 +100,9 @@ function create() {
         300,
         'player'
     );
+
+    // Adjust if your image is too big or too small
+    player.setScale(2);
 
     star = this.physics.add.sprite(
         600,
@@ -136,16 +149,16 @@ function showMemory(){
     box.style.display = "block";
 
     box.innerHTML = `
-        <h2>❤️ Primer Recuerdo</h2>
+        <h2>❤️ Our First Memory</h2>
 
         <p>
-        Aquí puedes poner una foto vuestra,
-        una anécdota o una carta.
+        This is where you'll later put
+        a photo, a message, or a memory.
         </p>
 
         <p>
-        "Ese día no sabía que ibas a convertirte
-        en la persona más importante de mi año."
+        "That day I didn't know you would
+        become my favorite person."
         </p>
     `;
 
