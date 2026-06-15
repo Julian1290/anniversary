@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>The Story of Us</title>
+
+<script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.min.js"></script>
+
+<style>
+body{
+    margin:0;
+    background:black;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+#message{
+    position:absolute;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%);
+    background:white;
+    padding:15px;
+    border-radius:10px;
+    display:none;
+    max-width:500px;
+    font-family:Arial;
+}
+</style>
+
+</head>
+<body>
+
+<div id="message"></div>
+
+<script>
+
+const config = {
+    type: Phaser.AUTO,
+    width: 800,
+    height: 600,
+    backgroundColor: '#5dbb63',
+    physics: {
+        default: 'arcade'
+    },
+    scene: {
+        preload,
+        create,
+        update
+    }
+};
+
+const game = new Phaser.Game(config);
+
+let player;
+let cursors;
+let star;
+
+function preload() {
+
+    // Personaje simple azul
+    let graphics = this.make.graphics({x:0,y:0,add:false});
+    graphics.fillStyle(0x0000ff);
+    graphics.fillRect(0,0,32,32);
+    graphics.generateTexture('player',32,32);
+
+    // Estrella amarilla
+    graphics.clear();
+    graphics.fillStyle(0xffff00);
+    graphics.fillCircle(16,16,16);
+    graphics.generateTexture('star',32,32);
+}
+
+function create() {
+
+    this.add.text(
+        250,
+        20,
+        'The Story of Us - Demo',
+        {
+            fontSize:'28px',
+            color:'#ffffff'
+        }
+    );
+
+    player = this.physics.add.sprite(
+        100,
+        300,
+        'player'
+    );
+
+    star = this.physics.add.sprite(
+        600,
+        300,
+        'star'
+    );
+
+    cursors = this.input.keyboard.createCursorKeys();
+
+    this.physics.add.overlap(
+        player,
+        star,
+        showMemory,
+        null,
+        this
+    );
+}
+
+function update() {
+
+    player.setVelocity(0);
+
+    if(cursors.left.isDown){
+        player.setVelocityX(-200);
+    }
+
+    if(cursors.right.isDown){
+        player.setVelocityX(200);
+    }
+
+    if(cursors.up.isDown){
+        player.setVelocityY(-200);
+    }
+
+    if(cursors.down.isDown){
+        player.setVelocityY(200);
+    }
+}
+
+function showMemory(){
+
+    const box = document.getElementById("message");
+
+    box.style.display = "block";
+
+    box.innerHTML = `
+        <h2>❤️ Primer Recuerdo</h2>
+
+        <p>
+        Aquí puedes poner una foto vuestra,
+        una anécdota o una carta.
+        </p>
+
+        <p>
+        "Ese día no sabía que ibas a convertirte
+        en la persona más importante de mi año."
+        </p>
+    `;
+
+    star.destroy();
+}
+
+</script>
+
+</body>
+</html>
