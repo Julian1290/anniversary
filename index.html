@@ -30,8 +30,8 @@ body{
     box-shadow:0 0 10px rgba(0,0,0,0.3);
 }
 </style>
-
 </head>
+
 <body>
 
 <div id="message"></div>
@@ -42,8 +42,7 @@ const config = {
     type: Phaser.AUTO,
     width: 800,
     height: 600,
-    backgroundColor: '#5dbb63',
-
+    backgroundColor: '#ffffff',
     pixelArt: true,
 
     physics: {
@@ -65,13 +64,10 @@ let star;
 
 function preload() {
 
-    // Your pixel-art character
-    this.load.image(
-        'player',
-        'assets/girlfriend.png'
-    );
+    // Your PNG file here
+    this.load.image('player', 'assets/girlfriend.png');
 
-    // Create a simple yellow star
+    // Yellow star
     let graphics = this.make.graphics({
         x:0,
         y:0,
@@ -91,7 +87,7 @@ function create() {
         'The Story of Us ❤️',
         {
             fontSize:'28px',
-            color:'#ffffff'
+            color:'#000000'
         }
     );
 
@@ -101,8 +97,18 @@ function create() {
         'player'
     );
 
-    // Adjust if your image is too big or too small
-    player.setScale(2);
+    // Change this number if your image is too big/small
+    player.setScale(0.3);
+
+    // Red border around the sprite so you can debug the image size
+    let bounds = player.getBounds();
+
+    this.add.rectangle(
+        bounds.x + bounds.width / 2,
+        bounds.y + bounds.height / 2,
+        bounds.width,
+        bounds.height
+    ).setStrokeStyle(2, 0xff0000);
 
     star = this.physics.add.sprite(
         600,
@@ -152,8 +158,8 @@ function showMemory(){
         <h2>❤️ Our First Memory</h2>
 
         <p>
-        This is where you'll later put
-        a photo, a message, or a memory.
+        This is where you can put a photo,
+        a memory, or a romantic message.
         </p>
 
         <p>
