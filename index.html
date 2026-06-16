@@ -64,10 +64,8 @@ let star;
 
 function preload() {
 
-    // Your PNG file here
     this.load.image('player', 'assets/girlfriend.png');
 
-    // Yellow star
     let graphics = this.make.graphics({
         x:0,
         y:0,
@@ -97,18 +95,8 @@ function create() {
         'player'
     );
 
-    // Change this number if your image is too big/small
-    player.setScale(0.3);
-
-    // Red border around the sprite so you can debug the image size
-    let bounds = player.getBounds();
-
-    this.add.rectangle(
-        bounds.x + bounds.width / 2,
-        bounds.y + bounds.height / 2,
-        bounds.width,
-        bounds.height
-    ).setStrokeStyle(2, 0xff0000);
+    player.displayHeight = 120;
+    player.scaleX = player.scaleY;
 
     star = this.physics.add.sprite(
         600,
