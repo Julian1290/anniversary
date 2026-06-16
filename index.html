@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>The Story of Us</title>
+<title>The Story of Us ❤️</title>
 
 <script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.min.js"></script>
 
@@ -14,6 +14,10 @@ body{
     justify-content:center;
     align-items:center;
     height:100vh;
+}
+
+canvas{
+    image-rendering:auto;
 }
 
 #message{
@@ -42,8 +46,9 @@ const config = {
     type: Phaser.AUTO,
     width: 800,
     height: 600,
-    backgroundColor: '#ffffff',
-    pixelArt: true,
+    backgroundColor: '#e8e8e8',
+
+    pixelArt: false,
 
     physics: {
         default: 'arcade'
@@ -64,12 +69,14 @@ let star;
 
 function preload() {
 
+    // Your photo
     this.load.image('player', 'assets/girlfriend.png');
 
+    // Yellow memory point
     let graphics = this.make.graphics({
-        x:0,
-        y:0,
-        add:false
+        x: 0,
+        y: 0,
+        add: false
     });
 
     graphics.fillStyle(0xffff00);
@@ -80,7 +87,7 @@ function preload() {
 function create() {
 
     this.add.text(
-        240,
+        220,
         20,
         'The Story of Us ❤️',
         {
@@ -95,9 +102,11 @@ function create() {
         'player'
     );
 
-    player.displayHeight = 120;
+    // Resize photo
+    player.displayHeight = 140;
     player.scaleX = player.scaleY;
 
+    // First memory
     star = this.physics.add.sprite(
         600,
         300,
@@ -143,16 +152,16 @@ function showMemory(){
     box.style.display = "block";
 
     box.innerHTML = `
-        <h2>❤️ Our First Memory</h2>
+        <h2>❤️ First Memory</h2>
 
         <p>
-        This is where you can put a photo,
-        a memory, or a romantic message.
+        Here you can put a photo,
+        a memory, or a message.
         </p>
 
         <p>
-        "That day I didn't know you would
-        become my favorite person."
+        "That day I didn't know
+        you would become my favorite person."
         </p>
     `;
 
