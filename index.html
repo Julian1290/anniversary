@@ -67,48 +67,54 @@ h1{
 <body>
 
 <div id="game">
+
     <h1>The Story of Us ❤️</h1>
 
-    <img id="player" src="assets/girlfriend.png">
+    <img id="player" src="girlfriend.png" alt="Girlfriend">
 
     <div id="star"></div>
 
     <div id="message">
         <h2>❤️ Primer recuerdo</h2>
         <p>
-            Aquí puedes poner una foto, una anécdota o una carta.
+            Aquí irá una foto, un recuerdo o una carta.
         </p>
         <p>
             "Ese día no sabía que ibas a convertirte en mi persona favorita."
         </p>
     </div>
+
 </div>
 
 <script>
+
 const player = document.getElementById("player");
 const star = document.getElementById("star");
 const message = document.getElementById("message");
 
 let x = 100;
 let y = 260;
-const speed = 12;
+const speed = 15;
 
 document.addEventListener("keydown", function(event){
 
-    if(event.key === "ArrowLeft"){
-        x -= speed;
-    }
+    switch(event.key){
 
-    if(event.key === "ArrowRight"){
-        x += speed;
-    }
+        case "ArrowLeft":
+            x -= speed;
+            break;
 
-    if(event.key === "ArrowUp"){
-        y -= speed;
-    }
+        case "ArrowRight":
+            x += speed;
+            break;
 
-    if(event.key === "ArrowDown"){
-        y += speed;
+        case "ArrowUp":
+            y -= speed;
+            break;
+
+        case "ArrowDown":
+            y += speed;
+            break;
     }
 
     x = Math.max(0, Math.min(800 - player.offsetWidth, x));
@@ -121,6 +127,7 @@ document.addEventListener("keydown", function(event){
 });
 
 function checkCollision(){
+
     const p = player.getBoundingClientRect();
     const s = star.getBoundingClientRect();
 
@@ -136,6 +143,7 @@ function checkCollision(){
         star.style.display = "none";
     }
 }
+
 </script>
 
 </body>
