@@ -63,18 +63,9 @@ h1{
 }
 
 @keyframes float{
-    0%{
-        transform:translateY(0);
-        opacity:0.4;
-    }
-    50%{
-        transform:translateY(-25px);
-        opacity:1;
-    }
-    100%{
-        transform:translateY(0);
-        opacity:0.4;
-    }
+    0%{ transform:translateY(0); opacity:0.4; }
+    50%{ transform:translateY(-25px); opacity:1; }
+    100%{ transform:translateY(0); opacity:0.4; }
 }
 
 #message{
@@ -90,6 +81,35 @@ h1{
     box-shadow:0 0 15px rgba(0,0,0,0.3);
     z-index:10;
     color:#5c1a35;
+}
+
+#controls{
+    position:absolute;
+    bottom:20px;
+    left:20px;
+    display:grid;
+    grid-template-columns:60px 60px 60px;
+    grid-template-rows:60px 60px;
+    gap:8px;
+    z-index:20;
+}
+
+.control-btn{
+    border:none;
+    border-radius:15px;
+    background:#ff7aa8;
+    color:white;
+    font-size:28px;
+    box-shadow:0 4px 8px rgba(0,0,0,0.25);
+}
+
+.control-btn:active{
+    background:#ff4f8f;
+    transform:scale(0.95);
+}
+
+.empty{
+    visibility:hidden;
 }
 </style>
 </head>
@@ -119,6 +139,16 @@ h1{
         </p>
     </div>
 
+    <div id="controls">
+        <div class="empty"></div>
+        <button class="control-btn" onclick="movePlayer('up')">↑</button>
+        <div class="empty"></div>
+
+        <button class="control-btn" onclick="movePlayer('left')">←</button>
+        <button class="control-btn" onclick="movePlayer('down')">↓</button>
+        <button class="control-btn" onclick="movePlayer('right')">→</button>
+    </div>
+
 </div>
 
 <script>
@@ -132,23 +162,39 @@ const speed = 15;
 
 document.addEventListener("keydown", function(event){
 
-    switch(event.key){
+    if(event.key === "ArrowLeft"){
+        movePlayer("left");
+    }
 
-        case "ArrowLeft":
-            x -= speed;
-            break;
+    if(event.key === "ArrowRight"){
+        movePlayer("right");
+    }
 
-        case "ArrowRight":
-            x += speed;
-            break;
+    if(event.key === "ArrowUp"){
+        movePlayer("up");
+    }
 
-        case "ArrowUp":
-            y -= speed;
-            break;
+    if(event.key === "ArrowDown"){
+        movePlayer("down");
+    }
+});
 
-        case "ArrowDown":
-            y += speed;
-            break;
+function movePlayer(direction){
+
+    if(direction === "left"){
+        x -= speed;
+    }
+
+    if(direction === "right"){
+        x += speed;
+    }
+
+    if(direction === "up"){
+        y -= speed;
+    }
+
+    if(direction === "down"){
+        y += speed;
     }
 
     x = Math.max(0, Math.min(800 - player.offsetWidth, x));
@@ -158,7 +204,7 @@ document.addEventListener("keydown", function(event){
     player.style.top = y + "px";
 
     checkCollision();
-});
+}
 
 function checkCollision(){
 
