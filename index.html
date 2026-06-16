@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <title>The Story of Us ❤️</title>
 
-<script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.min.js"></script>
-
 <style>
 body{
     margin:0;
@@ -14,15 +12,46 @@ body{
     justify-content:center;
     align-items:center;
     height:100vh;
+    font-family:Arial, sans-serif;
 }
 
-canvas{
-    image-rendering:auto;
+#game{
+    position:relative;
+    width:800px;
+    height:600px;
+    background:#eeeeee;
+    overflow:hidden;
+}
+
+h1{
+    text-align:center;
+    margin-top:15px;
+    font-family:monospace;
+    font-weight:normal;
+}
+
+#player{
+    position:absolute;
+    left:100px;
+    top:300px;
+    height:120px;
+    width:auto;
+    border-radius:10px;
+}
+
+#star{
+    position:absolute;
+    left:600px;
+    top:300px;
+    width:32px;
+    height:32px;
+    background:yellow;
+    border-radius:50%;
 }
 
 #message{
     position:absolute;
-    top:20px;
+    top:70px;
     left:50%;
     transform:translateX(-50%);
     background:white;
@@ -30,144 +59,85 @@ canvas{
     border-radius:10px;
     display:none;
     max-width:500px;
-    font-family:Arial;
     box-shadow:0 0 10px rgba(0,0,0,0.3);
+    z-index:10;
 }
 </style>
 </head>
 
 <body>
 
-<div id="message"></div>
+<div id="game">
+    <h1>The Story of Us ❤️</h1>
+
+    <img id="player" src="assets/girlfriend.png">
+
+    <div id="star"></div>
+
+    <div id="message">
+        <h2>❤️ First Memory</h2>
+        <p>
+            This is where you can put a photo,
+            a memory, or a romantic message.
+        </p>
+        <p>
+            "That day I didn't know you would become my favorite person."
+        </p>
+    </div>
+</div>
 
 <script>
+const player = document.getElementById("player");
+const star = document.getElementById("star");
+const message = document.getElementById("message");
 
-const config = {
-    type: Phaser.AUTO,
-    width: 800,
-    height: 600,
-    backgroundColor: '#e8e8e8',
+let x = 100;
+let y = 300;
+const speed = 10;
 
-    pixelArt: false,
+document.addEventListener("keydown", function(event){
 
-    physics: {
-        default: 'arcade'
-    },
-
-    scene: {
-        preload,
-        create,
-        update
+    if(event.key === "ArrowLeft"){
+        x -= speed;
     }
-};
 
-const game = new Phaser.Game(config);
+    if(event.key === "ArrowRight"){
+        x += speed;
+    }
 
-let player;
-let cursors;
-let star;
+    if(event.key === "ArrowUp"){
+        y -= speed;
+    }
 
-function preload() {
+    if(event.key === "ArrowDown"){
+        y += speed;
+    }
 
-    // Your photo
-    this.load.image('player', 'assets/girlfriend.png');
+    x = Math.max(0, Math.min(800 - player.offsetWidth, x));
+    y = Math.max(50, Math.min(600 - player.offsetHeight, y));
 
-    // Yellow memory point
-    let graphics = this.make.graphics({
-        x: 0,
-        y: 0,
-        add: false
-    });
+    player.style.left = x + "px";
+    player.style.top = y + "px";
 
-    graphics.fillStyle(0xffff00);
-    graphics.fillCircle(16,16,16);
-    graphics.generateTexture('star',32,32);
-}
+    checkCollision();
+});
 
-function create() {
+function checkCollision(){
+    const p = player.getBoundingClientRect();
+    const s = star.getBoundingClientRect();
 
-    this.add.text(
-        220,
-        20,
-        'The Story of Us ❤️',
-        {
-            fontSize:'28px',
-            color:'#000000'
-        }
+    const touching = !(
+        p.right < s.left ||
+        p.left > s.right ||
+        p.bottom < s.top ||
+        p.top > s.bottom
     );
 
-    player = this.physics.add.sprite(
-        100,
-        300,
-        'player'
-    );
-
-    // Resize photo
-    player.displayHeight = 140;
-    player.scaleX = player.scaleY;
-
-    // First memory
-    star = this.physics.add.sprite(
-        600,
-        300,
-        'star'
-    );
-
-    cursors = this.input.keyboard.createCursorKeys();
-
-    this.physics.add.overlap(
-        player,
-        star,
-        showMemory,
-        null,
-        this
-    );
-}
-
-function update() {
-
-    player.setVelocity(0);
-
-    if(cursors.left.isDown){
-        player.setVelocityX(-200);
-    }
-
-    if(cursors.right.isDown){
-        player.setVelocityX(200);
-    }
-
-    if(cursors.up.isDown){
-        player.setVelocityY(-200);
-    }
-
-    if(cursors.down.isDown){
-        player.setVelocityY(200);
+    if(touching){
+        message.style.display = "block";
+        star.style.display = "none";
     }
 }
-
-function showMemory(){
-
-    const box = document.getElementById("message");
-
-    box.style.display = "block";
-
-    box.innerHTML = `
-        <h2>❤️ First Memory</h2>
-
-        <p>
-        Here you can put a photo,
-        a memory, or a message.
-        </p>
-
-        <p>
-        "That day I didn't know
-        you would become my favorite person."
-        </p>
-    `;
-
-    star.destroy();
-}
-
 </script>
 
 </body>
