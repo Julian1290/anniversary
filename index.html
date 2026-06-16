@@ -25,7 +25,6 @@ body{
 
 h1{
     text-align:center;
-    margin-top:15px;
     font-family:monospace;
     font-weight:normal;
 }
@@ -33,25 +32,25 @@ h1{
 #player{
     position:absolute;
     left:100px;
-    top:300px;
+    top:260px;
     height:120px;
     width:auto;
-    border-radius:10px;
+    border-radius:12px;
 }
 
 #star{
     position:absolute;
     left:600px;
     top:300px;
-    width:32px;
-    height:32px;
+    width:35px;
+    height:35px;
     background:yellow;
     border-radius:50%;
 }
 
 #message{
     position:absolute;
-    top:70px;
+    top:80px;
     left:50%;
     transform:translateX(-50%);
     background:white;
@@ -75,13 +74,12 @@ h1{
     <div id="star"></div>
 
     <div id="message">
-        <h2>❤️ First Memory</h2>
+        <h2>❤️ Primer recuerdo</h2>
         <p>
-            This is where you can put a photo,
-            a memory, or a romantic message.
+            Aquí puedes poner una foto, una anécdota o una carta.
         </p>
         <p>
-            "That day I didn't know you would become my favorite person."
+            "Ese día no sabía que ibas a convertirte en mi persona favorita."
         </p>
     </div>
 </div>
@@ -92,8 +90,8 @@ const star = document.getElementById("star");
 const message = document.getElementById("message");
 
 let x = 100;
-let y = 300;
-const speed = 10;
+let y = 260;
+const speed = 12;
 
 document.addEventListener("keydown", function(event){
 
