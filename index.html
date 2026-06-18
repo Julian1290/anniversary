@@ -162,6 +162,12 @@ const player = document.getElementById("player");
 const heartGoal = document.getElementById("heartGoal");
 const message = document.getElementById("message");
 
+const music = new Audio("just_the_way.mp3");
+music.loop = true;
+music.volume = 0.6;
+
+let musicStarted = false;
+
 let x = 100;
 let y = 260;
 const speed = 15;
@@ -185,7 +191,16 @@ document.addEventListener("keydown", function(event){
     }
 });
 
+function startMusic(){
+    if(!musicStarted){
+        music.play();
+        musicStarted = true;
+    }
+}
+
 function movePlayer(direction){
+
+    startMusic();
 
     if(direction === "left"){
         x -= speed;
