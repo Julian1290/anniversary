@@ -44,47 +44,66 @@ h1{
     z-index:5;
 }
 
-#heartGoal{
+.month{
     position:absolute;
-    left:600px;
-    top:300px;
-    font-size:50px;
-    animation:pulse 1.5s infinite;
+    width:130px;
+    height:60px;
+    background:white;
+    border:3px solid #ff6fa5;
+    border-radius:15px;
+    color:#5c1a35;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-weight:bold;
+    box-shadow:0 0 15px rgba(255,105,180,0.5);
 }
 
-.heart{
-    position:absolute;
-    color:#ff5c8a;
-    font-size:24px;
-    animation:float 6s infinite ease-in-out;
-    opacity:0.7;
-}
-
-@keyframes float{
-    0%{ transform:translateY(0); opacity:0.4; }
-    50%{ transform:translateY(-25px); opacity:1; }
-    100%{ transform:translateY(0); opacity:0.4; }
-}
-
-@keyframes pulse{
-    0%{transform:scale(1);}
-    50%{transform:scale(1.25);}
-    100%{transform:scale(1);}
+#june2024{
+    left:560px;
+    top:280px;
 }
 
 #message{
     position:absolute;
-    top:80px;
+    top:50px;
     left:50%;
     transform:translateX(-50%);
     background:white;
     padding:18px;
     border-radius:15px;
     display:none;
-    max-width:500px;
+    width:620px;
     box-shadow:0 0 15px rgba(0,0,0,0.3);
     z-index:10;
     color:#5c1a35;
+    text-align:center;
+}
+
+.gallery{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    margin:12px 0;
+}
+
+.gallery img{
+    height:120px;
+    width:120px;
+    object-fit:cover;
+    border-radius:12px;
+    border:3px solid #ffd6e7;
+}
+
+#closeBtn{
+    margin-top:10px;
+    padding:10px 20px;
+    border:none;
+    border-radius:12px;
+    background:#ff6fa5;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
 }
 
 #controls{
@@ -126,23 +145,27 @@ h1{
 
     <h1>The Story of Us ❤️</h1>
 
-    <div class="heart" style="left:80px; top:90px;">❤️</div>
-    <div class="heart" style="left:700px; top:120px;">💕</div>
-    <div class="heart" style="left:170px; top:480px;">💖</div>
-    <div class="heart" style="left:650px; top:470px;">💗</div>
-
     <img id="player" src="girlfriend.png" alt="Girlfriend">
 
-    <div id="heartGoal">❤️</div>
+    <div id="june2024" class="month">
+        Junio 2024
+    </div>
 
     <div id="message">
-        <h2>❤️ Primer recuerdo</h2>
+        <h2>Junio 2024 ❤️</h2>
+
+        <div class="gallery">
+            <img src="june-2024_1.jpg">
+            <img src="june-2024_2.jpg">
+        </div>
+
         <p>
-            Aquí irá una foto, un recuerdo o una carta.
+            Este fue uno de los primeros capítulos de nuestra historia.
+            Todavía no sabía todo lo que íbamos a vivir, pero desde este mes
+            empezaste a volverte alguien muy especial para mí.
         </p>
-        <p>
-            "Ese día no sabía que ibas a convertirte en mi persona favorita."
-        </p>
+
+        <button id="closeBtn" onclick="closeMemory()">Cerrar</button>
     </div>
 
     <div id="controls">
@@ -159,7 +182,7 @@ h1{
 
 <script>
 const player = document.getElementById("player");
-const heartGoal = document.getElementById("heartGoal");
+const june2024 = document.getElementById("june2024");
 const message = document.getElementById("message");
 
 const music = new Audio("just_the_way.mp3");
@@ -167,6 +190,7 @@ music.loop = true;
 music.volume = 0.6;
 
 let musicStarted = false;
+let juneOpened = false;
 
 let x = 100;
 let y = 260;
@@ -230,19 +254,23 @@ function movePlayer(direction){
 function checkCollision(){
 
     const p = player.getBoundingClientRect();
-    const h = heartGoal.getBoundingClientRect();
+    const j = june2024.getBoundingClientRect();
 
-    const touching = !(
-        p.right < h.left ||
-        p.left > h.right ||
-        p.bottom < h.top ||
-        p.top > h.bottom
+    const touchingJune = !(
+        p.right < j.left ||
+        p.left > j.right ||
+        p.bottom < j.top ||
+        p.top > j.bottom
     );
 
-    if(touching){
+    if(touchingJune && !juneOpened){
         message.style.display = "block";
-        heartGoal.style.display = "none";
+        juneOpened = true;
     }
+}
+
+function closeMemory(){
+    message.style.display = "none";
 }
 </script>
 
