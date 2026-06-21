@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Nuestra historia en un año ❤️</title>
+<title>The Story of Us ❤️</title>
 
 <style>
 body{
@@ -46,27 +46,27 @@ h1{
 
 .month{
     position:absolute;
-    width:130px;
+    width:150px;
     height:60px;
     background:white;
     border:3px solid #ff6fa5;
     border-radius:15px;
-    color:#5c1a35;
     display:flex;
     justify-content:center;
     align-items:center;
     font-weight:bold;
-    box-shadow:0 0 15px rgba(255,105,180,0.5);
+    color:#5c1a35;
+    box-shadow:0 0 15px rgba(255,105,180,0.4);
+    z-index:4;
 }
 
-#june2024{
-    left:560px;
-    top:280px;
+.month:hover{
+    transform:scale(1.05);
 }
 
 #message{
     position:absolute;
-    top:50px;
+    top:45px;
     left:50%;
     transform:translateX(-50%);
     background:white;
@@ -75,7 +75,7 @@ h1{
     display:none;
     width:620px;
     box-shadow:0 0 15px rgba(0,0,0,0.3);
-    z-index:10;
+    z-index:1000;
     color:#5c1a35;
     text-align:center;
 }
@@ -84,12 +84,12 @@ h1{
     display:flex;
     gap:10px;
     justify-content:center;
-    margin:12px 0;
+    margin:15px 0;
 }
 
 .gallery img{
-    height:120px;
     width:120px;
+    height:120px;
     object-fit:cover;
     border-radius:12px;
     border:3px solid #ffd6e7;
@@ -104,6 +104,10 @@ h1{
     color:white;
     font-size:16px;
     cursor:pointer;
+}
+
+#closeBtn:hover{
+    background:#ff4f8f;
 }
 
 #controls{
@@ -136,6 +140,17 @@ h1{
 .empty{
     visibility:hidden;
 }
+
+#hint{
+    position:absolute;
+    left:20px;
+    bottom:20px;
+    color:#5c1a35;
+    background:rgba(255,255,255,0.65);
+    padding:10px 14px;
+    border-radius:12px;
+    font-size:14px;
+}
 </style>
 </head>
 
@@ -147,28 +162,12 @@ h1{
 
     <img id="player" src="girlfriend.png" alt="Girlfriend">
 
-    <div id="june2024" class="month">
-        Junio 2024
-    </div>
+    <div id="monthsContainer"></div>
 
-    <div id="message">
-        <h2>Junio 2024 ❤️</h2>
+    <div id="message"></div>
 
-        <div class="gallery">
-            <img src="june-2024_1.jpeg">
-            <img src="june-2024_2.jpeg">
-            <img src="june-2024_3.jpeg">
-        </div>
-
-        <p>
-            Este fue el mejor verano que he vivido, porque confirmé lo que ya había empezado a sentir 
-            por ti en los 5 meses que nos estuvimos escribiendo. Estaba tan nervioso y emocionado por volverte a ver,
-            y no sabes cómo deseaba solo besarte y abrazarte =).
-            
-            
-        </p>
-
-        <button id="closeBtn" onclick="closeMemory()">Cerrar</button>
+    <div id="hint">
+        Muévete hacia una cámara 📸 para abrir un recuerdo.
     </div>
 
     <div id="controls">
@@ -185,22 +184,68 @@ h1{
 
 <script>
 const player = document.getElementById("player");
-const june2024 = document.getElementById("june2024");
 const message = document.getElementById("message");
+const monthsContainer = document.getElementById("monthsContainer");
 
 const music = new Audio("just_the_way.mp3");
 music.loop = true;
 music.volume = 0.6;
 
 let musicStarted = false;
-let juneOpened = false;
+let currentMemory = null;
 
 let x = 100;
 let y = 260;
 const speed = 15;
 
-document.addEventListener("keydown", function(event){
+// Add more months here later.
+// Just copy one block and change id, label, x, y, photos, and text.
+const memories = [
+    {
+        id: "june2024",
+        label: "📸 Junio 2024",
+        x: 560,
+        y: 250,
+        photos: [
+            "junio2024_1.jpg",
+            "junio2024_2.jpg",
+            "junio2024_3.jpg"
+        ],
+        text: `
+            Este fue uno de los primeros capítulos de nuestra historia.
+            Todavía no sabía todo lo que íbamos a vivir, pero desde este mes
+            empezaste a volverte alguien muy especial para mí.
+        `
+    },
+    {
+        id: "july2024",
+        label: "📸 Julio 2024",
+        x: 260,
+        y: 420,
+        photos: [
+            "julio2025_1.jpg",
+            "julio2025_2.jpg",
+            "julio2025_3.jpg"
+        ],
+        text: `
+            Julio fue otro pedacito bonito de nuestra historia.
+            Otro mes descubriendo cosas de ti, compartiendo momentos,
+            y sintiendo que cada vez me gustaba más estar contigo.
+        `
+    }
+];
 
+memories.forEach(memory => {
+    const div = document.createElement("div");
+    div.className = "month";
+    div.id = memory.id;
+    div.style.left = memory.x + "px";
+    div.style.top = memory.y + "px";
+    div.innerHTML = memory.label;
+    monthsContainer.appendChild(div);
+});
+
+document.addEventListener("keydown", function(event){
     if(event.key === "ArrowLeft"){
         movePlayer("left");
     }
@@ -220,13 +265,14 @@ document.addEventListener("keydown", function(event){
 
 function startMusic(){
     if(!musicStarted){
-        music.play();
+        music.play().catch(() => {
+            console.log("Music could not start yet.");
+        });
         musicStarted = true;
     }
 }
 
 function movePlayer(direction){
-
     startMusic();
 
     if(direction === "left"){
@@ -255,21 +301,43 @@ function movePlayer(direction){
 }
 
 function checkCollision(){
-
     const p = player.getBoundingClientRect();
-    const j = june2024.getBoundingClientRect();
 
-    const touchingJune = !(
-        p.right < j.left ||
-        p.left > j.right ||
-        p.bottom < j.top ||
-        p.top > j.bottom
-    );
+    memories.forEach(memory => {
+        const monthElement = document.getElementById(memory.id);
+        const m = monthElement.getBoundingClientRect();
 
-    if(touchingJune && !juneOpened){
-        message.style.display = "block";
-        juneOpened = true;
-    }
+        const touching = !(
+            p.right < m.left ||
+            p.left > m.right ||
+            p.bottom < m.top ||
+            p.top > m.bottom
+        );
+
+        if(touching && currentMemory !== memory.id){
+            openMemory(memory);
+        }
+    });
+}
+
+function openMemory(memory){
+    currentMemory = memory.id;
+
+    message.innerHTML = `
+        <h2>${memory.label}</h2>
+
+        <div class="gallery">
+            <img src="${memory.photos[0]}" alt="Foto 1">
+            <img src="${memory.photos[1]}" alt="Foto 2">
+            <img src="${memory.photos[2]}" alt="Foto 3">
+        </div>
+
+        <p>${memory.text}</p>
+
+        <button id="closeBtn" onclick="closeMemory()">Cerrar</button>
+    `;
+
+    message.style.display = "block";
 }
 
 function closeMemory(){
