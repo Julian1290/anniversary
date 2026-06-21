@@ -2,6 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Story of Us ❤️</title>
 
 <style>
@@ -11,7 +12,7 @@ body{
     display:flex;
     justify-content:center;
     align-items:center;
-    height:100vh;
+    min-height:100vh;
     font-family:Arial, sans-serif;
 }
 
@@ -25,11 +26,39 @@ body{
     box-shadow:0 0 30px rgba(255, 105, 180, 0.6);
 }
 
+#world{
+    position:absolute;
+    left:0;
+    top:0;
+    width:2000px;
+    height:2200px;
+    background:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.65) 0 2px, transparent 3px),
+        radial-gradient(circle at 80% 30%, rgba(255,255,255,0.55) 0 2px, transparent 3px),
+        radial-gradient(circle at 50% 70%, rgba(255,255,255,0.55) 0 2px, transparent 3px),
+        #ffe4ec;
+    transition:transform 0.08s linear;
+}
+
 h1{
+    position:absolute;
+    top:15px;
+    left:0;
+    width:100%;
     text-align:center;
     font-family:monospace;
     font-weight:normal;
     color:#5c1a35;
+    z-index:50;
+    pointer-events:none;
+}
+
+.path{
+    position:absolute;
+    width:10px;
+    background:#ffc1d6;
+    border-radius:20px;
+    box-shadow:0 0 10px rgba(255,105,180,0.4);
 }
 
 #player{
@@ -41,39 +70,46 @@ h1{
     border-radius:15px;
     border:4px solid white;
     box-shadow:0 0 20px rgba(255,255,255,0.8);
-    z-index:5;
+    z-index:10;
 }
 
 .month{
     position:absolute;
-    width:150px;
-    height:60px;
+    width:165px;
+    min-height:62px;
     background:white;
     border:3px solid #ff6fa5;
-    border-radius:15px;
+    border-radius:16px;
+    color:#5c1a35;
     display:flex;
     justify-content:center;
     align-items:center;
+    text-align:center;
     font-weight:bold;
-    color:#5c1a35;
-    box-shadow:0 0 15px rgba(255,105,180,0.4);
-    z-index:4;
+    box-shadow:0 0 15px rgba(255,105,180,0.45);
+    animation:pulse 2s infinite;
+    padding:6px;
+    box-sizing:border-box;
 }
 
-.month:hover{
-    transform:scale(1.05);
+@keyframes pulse{
+    0%{transform:scale(1);}
+    50%{transform:scale(1.05);}
+    100%{transform:scale(1);}
 }
 
 #message{
     position:absolute;
-    top:45px;
+    top:55px;
     left:50%;
     transform:translateX(-50%);
     background:white;
     padding:18px;
     border-radius:15px;
     display:none;
-    width:620px;
+    width:640px;
+    max-height:465px;
+    overflow:auto;
     box-shadow:0 0 15px rgba(0,0,0,0.3);
     z-index:1000;
     color:#5c1a35;
@@ -85,11 +121,12 @@ h1{
     gap:10px;
     justify-content:center;
     margin:15px 0;
+    flex-wrap:wrap;
 }
 
 .gallery img{
-    width:120px;
-    height:120px;
+    width:145px;
+    height:145px;
     object-fit:cover;
     border-radius:12px;
     border:3px solid #ffd6e7;
@@ -97,17 +134,13 @@ h1{
 
 #closeBtn{
     margin-top:10px;
-    padding:10px 20px;
+    padding:10px 22px;
     border:none;
     border-radius:12px;
     background:#ff6fa5;
     color:white;
     font-size:16px;
     cursor:pointer;
-}
-
-#closeBtn:hover{
-    background:#ff4f8f;
 }
 
 #controls{
@@ -143,13 +176,39 @@ h1{
 
 #hint{
     position:absolute;
-    left:20px;
     bottom:20px;
+    left:20px;
     color:#5c1a35;
-    background:rgba(255,255,255,0.65);
+    background:rgba(255,255,255,0.75);
     padding:10px 14px;
     border-radius:12px;
+    z-index:60;
     font-size:14px;
+}
+
+@media (max-width:850px){
+    #game{
+        width:100vw;
+        height:100vh;
+        border-radius:0;
+    }
+
+    #message{
+        width:85vw;
+        max-height:70vh;
+    }
+
+    #controls{
+        right:12px;
+        bottom:12px;
+        grid-template-columns:60px 60px 60px;
+    }
+
+    .control-btn{
+        width:60px;
+        height:60px;
+        font-size:26px;
+    }
 }
 </style>
 </head>
@@ -157,17 +216,20 @@ h1{
 <body>
 
 <div id="game">
-
     <h1>The Story of Us ❤️</h1>
 
-    <img id="player" src="girlfriend.png" alt="Girlfriend">
+    <div id="world">
+        <div class="path" style="left:390px; top:220px; height:1750px;"></div>
 
-    <div id="monthsContainer"></div>
+        <img id="player" src="girlfriend.png" alt="Girlfriend">
+
+        <div id="monthsContainer"></div>
+    </div>
 
     <div id="message"></div>
 
     <div id="hint">
-        Muévete hacia una cámara 📸 para abrir un recuerdo.
+        Muévete hasta una cámara 📸 para abrir un recuerdo.
     </div>
 
     <div id="controls">
@@ -179,95 +241,169 @@ h1{
         <button class="control-btn" onclick="movePlayer('down')">⬇️</button>
         <button class="control-btn" onclick="movePlayer('right')">➡️</button>
     </div>
-
 </div>
 
 <script>
+const game = document.getElementById("game");
+const world = document.getElementById("world");
 const player = document.getElementById("player");
-const message = document.getElementById("message");
 const monthsContainer = document.getElementById("monthsContainer");
+const message = document.getElementById("message");
 
 const music = new Audio("just_the_way.mp3");
 music.loop = true;
 music.volume = 0.6;
-
 let musicStarted = false;
-let currentMemory = null;
 
-let x = 100;
-let y = 260;
-const speed = 15;
+let x = 250;
+let y = 220;
+const speed = 18;
+const worldWidth = 2000;
+const worldHeight = 2200;
 
-// Add more months here later.
-// Just copy one block and change id, label, x, y, photos, and text.
 const memories = [
     {
-        id: "june2024",
-        label: "📸 Junio 2024",
-        x: 560,
-        y: 250,
-        photos: [
-            "junio2024_1.jpg",
-            "junio2024_2.jpg",
-            "junio2024_3.jpg"
-        ],
-        text: `
-            Este fue uno de los primeros capítulos de nuestra historia.
-            Todavía no sabía todo lo que íbamos a vivir, pero desde este mes
-            empezaste a volverte alguien muy especial para mí.
-        `
+        id:"junio2024",
+        label:"📸 Junio 2024",
+        x:520,
+        y:250,
+        photos:["junio2024_1.jpg", "junio2024_2.jpg", "junio2024_3.jpg"],
+        text:`Este fue uno de los primeros capítulos de nuestra historia. Todavía no sabía todo lo que íbamos a vivir, pero desde este mes empezaste a volverte alguien muy especial para mí.`
     },
     {
-        id: "july2024",
-        label: "📸 Julio 2024",
-        x: 260,
-        y: 420,
-        photos: [
-            "julio2025_1.jpg",
-            "julio2025_2.jpg",
-            "julio2025_3.jpg"
-        ],
-        text: `
-            Julio fue otro pedacito bonito de nuestra historia.
-            Otro mes descubriendo cosas de ti, compartiendo momentos,
-            y sintiendo que cada vez me gustaba más estar contigo.
-        `
+        id:"julio2024",
+        label:"📸 Julio 2024",
+        x:230,
+        y:390,
+        photos:["julio2024_1.jpg", "julio2024_2.jpg", "julio2024_3.jpg"],
+        text:`Julio fue otro pedacito bonito de nuestra historia. Otro mes más descubriendo cosas de ti, compartiendo momentos, y sintiendo que cada vez me gustaba más estar contigo.`
+    },
+    {
+        id:"agosto2024",
+        label:"📸 Agosto 2024",
+        x:530,
+        y:540,
+        photos:["agosto2024_1.jpg", "agosto2024_2.jpg", "agosto2024_3.jpg"],
+        text:`Aquí escribe el recuerdo de Agosto 2024.`
+    },
+    {
+        id:"septiembre2024",
+        label:"📸 Septiembre 2024",
+        x:220,
+        y:690,
+        photos:["septiembre2024_1.jpg", "septiembre2024_2.jpg", "septiembre2024_3.jpg"],
+        text:`Aquí escribe el recuerdo de Septiembre 2024.`
+    },
+    {
+        id:"octubre2024",
+        label:"📸 Octubre 2024",
+        x:540,
+        y:840,
+        photos:["octubre2024_1.jpg", "octubre2024_2.jpg", "octubre2024_3.jpg"],
+        text:`Aquí escribe el recuerdo de Octubre 2024.`
+    },
+    {
+        id:"noviembre2024",
+        label:"📸 Noviembre 2024",
+        x:215,
+        y:990,
+        photos:["noviembre2024_1.jpg", "noviembre2024_2.jpg", "noviembre2024_3.jpg"],
+        text:`Aquí escribe el recuerdo de Noviembre 2024.`
+    },
+    {
+        id:"diciembre2024",
+        label:"📸 Diciembre 2024",
+        x:535,
+        y:1140,
+        photos:["diciembre2024_1.jpg", "diciembre2024_2.jpg", "diciembre2024_3.jpg"],
+        text:`Aquí escribe el recuerdo de Diciembre 2024.`
+    },
+    {
+        id:"enero2025",
+        label:"📸 Enero 2025",
+        x:230,
+        y:1290,
+        photos:["enero2025_1.jpg", "enero2025_2.jpg", "enero2025_3.jpg"],
+        text:`Aquí escribe el recuerdo de Enero 2025.`
+    },
+    {
+        id:"febrero2025",
+        label:"📸 Febrero 2025",
+        x:540,
+        y:1440,
+        photos:["febrero2025_1.jpg", "febrero2025_2.jpg", "febrero2025_3.jpg"],
+        text:`Aquí escribe el recuerdo de Febrero 2025.`
+    },
+    {
+        id:"marzo2025",
+        label:"📸 Marzo 2025",
+        x:220,
+        y:1590,
+        photos:["marzo2025_1.jpg", "marzo2025_2.jpg", "marzo2025_3.jpg"],
+        text:`Aquí escribe el recuerdo de Marzo 2025.`
+    },
+    {
+        id:"abril2025",
+        label:"📸 Abril 2025",
+        x:535,
+        y:1740,
+        photos:["abril2025_1.jpg", "abril2025_2.jpg", "abril2025_3.jpg"],
+        text:`Aquí escribe el recuerdo de Abril 2025.`
+    },
+    {
+        id:"mayo2025",
+        label:"📸 Mayo 2025",
+        x:220,
+        y:1890,
+        photos:["mayo2025_1.jpg", "mayo2025_2.jpg", "mayo2025_3.jpg"],
+        text:`Aquí escribe el recuerdo de Mayo 2025.`
+    },
+    {
+        id:"junio2025",
+        label:"📸 Junio 2025",
+        x:535,
+        y:2020,
+        photos:["junio2025_1.jpg", "junio2025_2.jpg", "junio2025_3.jpg"],
+        text:`Aquí escribe el recuerdo de Junio 2025.`
+    },
+    {
+        id:"julio2025",
+        label:"📸 Julio 2025",
+        x:900,
+        y:2020,
+        photos:["julio2025_1.jpg", "julio2025_2.jpg", "julio2025_3.jpg"],
+        text:`Aquí escribe el recuerdo de Julio 2025. Este puede ser el cierre del primer año: gracias por vivir este capítulo conmigo.`
     }
 ];
 
-memories.forEach(memory => {
-    const div = document.createElement("div");
-    div.className = "month";
-    div.id = memory.id;
-    div.style.left = memory.x + "px";
-    div.style.top = memory.y + "px";
-    div.innerHTML = memory.label;
-    monthsContainer.appendChild(div);
-});
+let currentMemory = null;
+
+createMonths();
+updatePlayer();
+updateCamera();
+
+function createMonths(){
+    memories.forEach(memory => {
+        const div = document.createElement("div");
+        div.className = "month";
+        div.id = memory.id;
+        div.style.left = memory.x + "px";
+        div.style.top = memory.y + "px";
+        div.innerHTML = memory.label;
+        monthsContainer.appendChild(div);
+    });
+}
 
 document.addEventListener("keydown", function(event){
-    if(event.key === "ArrowLeft"){
-        movePlayer("left");
-    }
-
-    if(event.key === "ArrowRight"){
-        movePlayer("right");
-    }
-
-    if(event.key === "ArrowUp"){
-        movePlayer("up");
-    }
-
-    if(event.key === "ArrowDown"){
-        movePlayer("down");
-    }
+    if(event.key === "ArrowLeft") movePlayer("left");
+    if(event.key === "ArrowRight") movePlayer("right");
+    if(event.key === "ArrowUp") movePlayer("up");
+    if(event.key === "ArrowDown") movePlayer("down");
 });
 
 function startMusic(){
     if(!musicStarted){
-        music.play().catch(() => {
-            console.log("Music could not start yet.");
-        });
+        music.play().catch(() => {});
         musicStarted = true;
     }
 }
@@ -275,43 +411,60 @@ function startMusic(){
 function movePlayer(direction){
     startMusic();
 
-    if(direction === "left"){
-        x -= speed;
-    }
+    if(direction === "left") x -= speed;
+    if(direction === "right") x += speed;
+    if(direction === "up") y -= speed;
+    if(direction === "down") y += speed;
 
-    if(direction === "right"){
-        x += speed;
-    }
+    x = Math.max(0, Math.min(worldWidth - player.offsetWidth, x));
+    y = Math.max(70, Math.min(worldHeight - player.offsetHeight, y));
 
-    if(direction === "up"){
-        y -= speed;
-    }
-
-    if(direction === "down"){
-        y += speed;
-    }
-
-    x = Math.max(0, Math.min(800 - player.offsetWidth, x));
-    y = Math.max(50, Math.min(600 - player.offsetHeight, y));
-
-    player.style.left = x + "px";
-    player.style.top = y + "px";
-
+    updatePlayer();
+    updateCamera();
     checkCollision();
 }
 
-function checkCollision(){
-    const p = player.getBoundingClientRect();
+function updatePlayer(){
+    player.style.left = x + "px";
+    player.style.top = y + "px";
+}
 
+function updateCamera(){
+    const gameWidth = game.clientWidth;
+    const gameHeight = game.clientHeight;
+
+    let cameraX = x + player.offsetWidth / 2 - gameWidth / 2;
+    let cameraY = y + player.offsetHeight / 2 - gameHeight / 2;
+
+    cameraX = Math.max(0, Math.min(worldWidth - gameWidth, cameraX));
+    cameraY = Math.max(0, Math.min(worldHeight - gameHeight, cameraY));
+
+    world.style.transform = `translate(${-cameraX}px, ${-cameraY}px)`;
+}
+
+function checkCollision(){
     memories.forEach(memory => {
-        const monthElement = document.getElementById(memory.id);
-        const m = monthElement.getBoundingClientRect();
+        const month = document.getElementById(memory.id);
+
+        const playerBox = {
+            left: x,
+            right: x + player.offsetWidth,
+            top: y,
+            bottom: y + player.offsetHeight
+        };
+
+        const monthBox = {
+            left: memory.x,
+            right: memory.x + month.offsetWidth,
+            top: memory.y,
+            bottom: memory.y + month.offsetHeight
+        };
 
         const touching = !(
-            p.right < m.left ||
-            p.left > m.right ||
-            p.bottom < m.top ||
-            p.top > m.bottom
+            playerBox.right < monthBox.left ||
+            playerBox.left > monthBox.right ||
+            playerBox.bottom < monthBox.top ||
+            playerBox.top > monthBox.bottom
         );
 
         if(touching && currentMemory !== memory.id){
@@ -327,9 +480,9 @@ function openMemory(memory){
         <h2>${memory.label}</h2>
 
         <div class="gallery">
-            <img src="${memory.photos[0]}" alt="Foto 1">
-            <img src="${memory.photos[1]}" alt="Foto 2">
-            <img src="${memory.photos[2]}" alt="Foto 3">
+            <img src="${memory.photos[0]}" alt="${memory.label} foto 1">
+            <img src="${memory.photos[1]}" alt="${memory.label} foto 2">
+            <img src="${memory.photos[2]}" alt="${memory.label} foto 3">
         </div>
 
         <p>${memory.text}</p>
